@@ -8,11 +8,11 @@ app.secret_key = "shravan"
 
 
 @app.route('/login')
-def hello_method():
+def login_template():
     return render_template('login.html')
 
 @app.route('/register')
-def hello_method():
+def register_template():
     return render_template('register.html')
 
 
@@ -35,7 +35,7 @@ def login_user():
 
 
 @app.route('/auth/register', methods=['POST'])
-def register_user()
+def register_user():
     email = request.form['email']
     password = request.form['password']
 
