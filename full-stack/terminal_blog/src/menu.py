@@ -23,9 +23,11 @@ class Menu(object):
     def _prompt_user_for_account(self):
         title = input("Enter Blog Title: ")
         description = input("Enter Blog Description: ")
+        author_id = input("Enter your id (Email): ")
         blog = Blog(author=self.user,
                     title=title,
-                    description=description)
+                    description=description,
+                    author_id=author_id)
         blog.save_to_mongo()
         self.user_blog = blog
 

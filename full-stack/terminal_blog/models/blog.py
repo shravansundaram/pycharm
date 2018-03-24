@@ -1,14 +1,16 @@
 import uuid
 import datetime
+
 from models.posts import Post
 from src.database import Database
 
 
 class Blog(object):
-    def __init__(self, author, title, description, id=None):
+    def __init__(self, author, title, description, author_id, id=None):
         self.author = author
         self.title = title
         self.description = description
+        self.author_id = author_id
         self.id = uuid.uuid4().hex if id is None else id
 
     def new_post(self):
@@ -37,6 +39,7 @@ class Blog(object):
     def json(self):
         return {
             "author": self.author,
+            "author_id": self.author_id,
             "title": self.title,
             "description": self.description,
             "id": self.id
@@ -49,5 +52,6 @@ class Blog(object):
         return cls(author=blog_data["author"],
                    title=blog_data["title"],
                    description=blog_data["description"],
+                   author_id=blog_data["author_id"],
                    id=blog_data["id"]
                    )
