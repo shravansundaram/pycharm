@@ -4,12 +4,16 @@ from src.common.database import Database
 from src.models.user import User
 
 app = Flask(__name__)
-app.secret_key ="shravan"
+app.secret_key = "shravan"
 
 
-@app.route('/')
+@app.route('/login')
 def hello_method():
     return render_template('login.html')
+
+@app.route('/register')
+def hello_method():
+    return render_template('register.html')
 
 
 @app.before_first_request
@@ -17,7 +21,7 @@ def initialize_database():
     Database.initialize()
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/auth/login', methods=['POST'])
 def login_user():
     email = request.form['email']
     password = request.form['password']
@@ -26,6 +30,16 @@ def login_user():
         User.login(email)
     else:
         session['email'] = None
+
+    return render_template("profile.html", email=session['email'])
+
+
+@app.route('/auth/register', methods=['POST'])
+def register_user()
+    email = request.form['email']
+    password = request.form['password']
+
+    User.register(email, password)
 
     return render_template("profile.html", email=session['email'])
 
