@@ -7,9 +7,15 @@ app = Flask(__name__)
 app.secret_key = "shravan"
 
 
+@app.route('/')
+def home_template():
+    return home_template('home.html')
+
+
 @app.route('/login')
 def login_template():
     return render_template('login.html')
+
 
 @app.route('/register')
 def register_template():
@@ -45,4 +51,4 @@ def register_user():
 
 
 if __name__ == '__main__':
-    app.run(port=4995)
+    app.run(port=5000)
