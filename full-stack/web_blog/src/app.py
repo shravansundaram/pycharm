@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session
 
+from models.blog import Blog
 from src.common.database import Database
 from src.models.user import User
 
@@ -60,6 +61,14 @@ def user_blogs(user_id=None):
     blogs = user.get_blogs()
 
     return render_template("user_blogs.html", blogs=blogs, email=user.email)
+
+
+@app.route('/posts/<string:blog_id>')
+def blog_posts(blog_id):
+    blog = Blog.from_mongo(blog_id)
+    posts = blog.get_posts()
+
+    return render_template("posts.html", posts=posts, blog_title=blog.title)
 
 
 if __name__ == '__main__':

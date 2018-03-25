@@ -14,7 +14,7 @@ class User(object):
         self._id = uuid.uuid4().hex if _id is None else _id
 
     @classmethod
-    def get_by_email(cls,email):
+    def get_by_email(cls, email):
         data = Database.find_one(collection="users",
                                  query={"email": email})
         if data is not None:
