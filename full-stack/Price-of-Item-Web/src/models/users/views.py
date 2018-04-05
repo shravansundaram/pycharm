@@ -2,26 +2,43 @@ from flask import Blueprint, request, session, url_for, render_template
 from werkzeug.utils import redirect
 
 from src.models.users.user import User
+import src.models.users.errors as UserError
 
 user_blueprint = Blueprint('users', __name__)
 
 
-@user_blueprint.route("/login", methods=["GET","POST"])
+@user_blueprint.route('/login', methods=["GET", "POST"])
 def login_user():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["hashed"]
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['hashed']
 
-        if User.is_valid_login(email, password):
-            session["email"] = email
-            return redirect(url_for(".user.alerts"))
+        try:
+            if User.is_valid_login(email, password):
+                session["email"] = email
+                return redirect(url_for(".user_alerts"))
+        except UserError.UserError as e:
+            return e.message
 
     return render_template("users/login.html")
 
 
-@user_blueprint.route("/register")
+@user_blueprint.route('/register', methods=['GET', 'POST'])
 def register_user():
-    pass
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['hashed']
+        print(email)
+        print(hashed)
+
+        try:
+            if User.register_user(email, password):
+                session['email'] = email
+                return redirect(url_for('.user_alerts'))
+        except UserError.UserError as e:
+            return e.message
+
+    return render_template("users/register.html")
 
 
 @user_blueprint.route("/alerts")
