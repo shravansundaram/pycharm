@@ -7,7 +7,7 @@ import src.models.users.errors as UserError
 user_blueprint = Blueprint('users', __name__)
 
 
-@user_blueprint.route('/login', methods=["GET", "POST"])
+@user_blueprint.route('/login', methods=['GET', 'POST'])
 def login_user():
     if request.method == 'POST':
         email = request.form['email']
@@ -28,8 +28,6 @@ def register_user():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['hashed']
-        print(email)
-        print(hashed)
 
         try:
             if User.register_user(email, password):
