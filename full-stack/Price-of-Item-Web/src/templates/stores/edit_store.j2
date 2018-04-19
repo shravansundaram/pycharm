@@ -1,0 +1,32 @@
+{% extends "base.j2" %}
+{% block content %}
+    <div class="page-header">
+        <h1>Edit Store </h1>
+    </div>
+    <div class="form-size">
+        <form method="post">
+            <form>
+              <div class="form-group">
+                <label for="name">Store Name</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{{ store.name }}">
+              </div>
+              <div class="form-group">
+                <label for="url_prefix">Store URL Prefix</label>
+                <input type="text" class="form-control" id="url_prefix" name="url_prefix" placeholder="http(s)://...." value="{{ store.url_prefix }}" aria-describedby="urlPrefixHelp">
+                <small id="urlPrefixHelp" class="form-text text-muted">What characters dp URLs of all items in this store start with.</small>
+              </div>
+              <div class="form-group">
+                <label for="tag_name">Store URL Prefix</label>
+                <input type="text" class="form-control" id="tag_name" name="tag_name" placeholder="span" value="{{ store.tag_name }}" aria-describedby="storeTagNameHelp">
+                <small id="storeTagNameHelp" class="form-text text-muted">What is the HTML tag name of the item that contains the item price? (usually <code>span </code>)</small>
+              </div>
+              <div class="form-group">
+                <label for="query">Store URL Prefix</label>
+                <input type="text" class="form-control" id="query" name="query" placeholder='{"id": "price-now"}' value='{{ store.query | tojson }}' aria-describedby="queryHelp">
+                <small id="queryHelp" class="form-text text-muted">What JSON query would we have to do to find the specific tag with the price? Remember to use double quotation maarks!</small>
+              </div>
+              <button type="submit" class="btn btn-success">Edit Store</button>
+            </form>
+        </form>
+    </div>
+{% endblock %}

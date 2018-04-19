@@ -9,13 +9,13 @@ from src.models.stores.store import Store
 
 
 class Item(object):
-    def __init__(self, name, url, _id=None):
+    def __init__(self, name, url, price=None, _id=None):
         self.name = name
         self.url = url
         store = Store.find_by_url(url)
         self.tag_name = store.tag_name
         self.query = store.query
-        self.price = None
+        self.price = None if price is None else price
         self._id = uuid.uuid4().hex if _id is None else _id
 
 
@@ -36,14 +36,16 @@ class Item(object):
         return self.price
 
     def save_to_db(self):
-        Database.insert(collection=ItemConstants.COLLECTION,
+        Database.update(collection=ItemConstants.COLLECTION,
+                        query= {"_id": self._id},
                         data=self.json())
 
     def json(self):
         return {
             "name": self.name,
             "url": self.url,
-            "_id": self._id
+            "_id": self._id,
+            "price": self.price
         }
 
     @classmethod

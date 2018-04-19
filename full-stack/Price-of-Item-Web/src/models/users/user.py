@@ -2,6 +2,8 @@ import uuid
 from src.common.database import Database
 from src.common.utils import Utils
 import src.models.users.errors as UserErrors
+from src.models.alerts.alert import Alert
+import src.models.users.constants as UserConstants
 
 
 class User(object):
@@ -23,7 +25,7 @@ class User(object):
         :return: True if valid, else False
         """
 
-        user_data = Database.find_one(collection="users",
+        user_data = Database.find_one(collection=UserConstants.COLLECTION,
                                       query={"email": email}
                                       )
         if user_data is None:
@@ -42,7 +44,7 @@ class User(object):
         :param password: sha-512 hashed password
         :return: True is registered successfully else false
         """
-        user_data = Database.find_one(collection="users",
+        user_data = Database.find_one(collection=UserConstants.COLLECTION,
                                       query={"email": email}
                                       )
         if user_data is not None:
@@ -56,7 +58,7 @@ class User(object):
         return True
 
     def save_to_db(self):
-        Database.insert(collection="users",
+        Database.insert(collection=UserConstants.COLLECTION,
                         data=self.json())
 
     def json(self):
@@ -65,3 +67,12 @@ class User(object):
             "email": self.email,
             "password": self.password
         }
+
+    @classmethod
+    def find_by_email(cls, email):
+        return cls(**Database.find_one(collection=UserConstants.COLLECTION,
+                                      query={"email": email}
+                                      ))
+
+    def get_alerts(self):
+        return Alert.find_by_user_email(self.email)

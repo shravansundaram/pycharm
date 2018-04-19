@@ -48,5 +48,15 @@ class Store(object):
                 raise StoreErrors.StoreNotFoundException("The URL prefix used to find the store came back empty")
 
     def save_to_db(self):
-        Database.insert(collection=StoreConstants.COLLECTION,
+        Database.update(collection=StoreConstants.COLLECTION,
+                        query={"_id": self._id},
                         data=self.json())
+
+    @classmethod
+    def all(cls):
+        return [cls(**elem) for elem in Database.find(collection=StoreConstants.COLLECTION,
+                                                      query={})]
+
+    def delete(self):
+        Database.remove(collection=StoreConstants.COLLECTION,
+                        query={"_id": self._id})

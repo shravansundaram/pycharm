@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pricing Alert Service</title>
+
+    {% include 'html_dependencies.j2' %}
+
+</head>
+<body>
+<div id="app" class="container">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #F5F5F5;">
+        <a class="navbar-brand" href="/">Pricing</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarNavDropdown" class="navbar-collapse collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <i class="fas fa-home"></i><span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('stores.index') }}">Stores</a>
+                </li>
+            </ul>
+            {% if session['email'] %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.user_alerts') }}">Your Alerts <i class="fas fa-bell"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.logout_user') }}">Logout <i class="fas fa-sign-out-alt"></i></a>
+                    </li>
+                </ul>
+            {% else %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.login_user') }}">Login <i class="fas fa-sign-in-alt"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('users.register_user') }}">Register <i class="fas fa-user-plus"></i></a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </nav>
+</div>
+
+<div class = "content container">
+    {% block content %}
+
+    {% endblock %}
+</div>
+
+</body>
+</html>

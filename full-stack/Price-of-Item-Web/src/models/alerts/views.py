@@ -1,24 +1,73 @@
-from flask import Blueprint
+from flask import Blueprint, render_template, request, session, redirect, url_for
+
+from src.models.alerts.alert import Alert
+from src.models.items.item import Item
+import src.models.users.decorators as user_decorators
+
+alert_blueprint = Blueprint("alerts", __name__)
 
 
-alert_blueprint = Blueprint("alert", __name__)
-
-
-@alert_blueprint.route("/new", methods=["POST"])
+@alert_blueprint.route('/new', methods=['GET','POST'])
+@user_decorators.requires_login
 def create_alert():
-    pass
+    if request.method == 'POST':
+        name = request.form['name']
+        url = request.form['url']
+        price_limit = float(request.form['price_limit'])
+
+        item = Item(name=name, url=url)
+        item.save_to_db()
+
+        alert = Alert(user_email=session['email'], price_limit=price_limit, item_id=item._id)
+        alert.load_item_price()  # This already saves to the database
+
+    return render_template('alerts/create_alert.j2')
 
 
-@alert_blueprint.route("/deactivate/<string:alert_id>")
+@alert_blueprint.route('/edit/<string:alert_id>', methods=['GET', 'POST'])
+@user_decorators.requires_login
+def edit_alert(alert_id):
+    alert = Alert.find_by_id(alert_id)
+    if request.method == 'POST':
+        price_limit = float(request.form['price_limit'])
+
+        alert.price_limit = price_limit
+        alert.save_to_db()
+
+        return redirect(url_for('users.user_alerts'))
+
+    return render_template('alerts/edit_alert.j2', alert=alert)
+
+
+@alert_blueprint.route('/deactivate/<string:alert_id>')
+@user_decorators.requires_login
 def deactivate_alert(alert_id):
-    pass
+    Alert.find_by_id(alert_id).deactivate()
+    return redirect(url_for('users.user_alerts'))
 
 
-@alert_blueprint.route("/alert/<string:alert_id>")
+@alert_blueprint.route('/activate/<string:alert_id>')
+@user_decorators.requires_login
+def activate_alert(alert_id):
+    Alert.find_by_id(alert_id).activate()
+    return redirect(url_for('users.user_alerts'))
+
+
+@alert_blueprint.route('/delete/<string:alert_id>')
+@user_decorators.requires_login
+def delete_alert(alert_id):
+    Alert.find_by_id(alert_id).delete()
+    return redirect(url_for('users.user_alerts'))
+
+
+@alert_blueprint.route('/<string:alert_id>')
+@user_decorators.requires_login
 def get_alert_page(alert_id):
-    pass
+    alert = Alert.find_by_id(alert_id)
+    return render_template('alerts/alert.j2', alert=alert)
 
 
-@alert_blueprint.route("/for_user/<string:user_id>")
-def get_alerts_for_user(user_id):
-    pass
+@alert_blueprint.route('/check_price/<string:alert_id>')
+def check_alert_price(alert_id):
+    Alert.find_by_id(alert_id).load_item_price()
+    return redirect(url_for('.get_alert_page', alert_id=alert_id))
